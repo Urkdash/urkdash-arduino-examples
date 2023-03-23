@@ -1,11 +1,8 @@
 /*
    Basic example of receiving data from the dashboard.
 
-    - This code is an example of how to use the Dashboard library with outputs widgets.
+    - This code is an example of how to use the Dashboard library with input widgets.
     - In this case the first widget has the zero position [0] and the second widget has the one position [1] (you get the idea).
-    - Dashboard template: 
-      - The first widget is a button.
-      - The second widget is a switch.
 
     NOTE: If you're using Platformio change the file for .cpp and add the <Arduino.h> Library
 */
@@ -13,8 +10,6 @@
 // Libraries
 #include <WiFi.h>
 #include <urkdash.h>
-
-#define LED_PIN 2
 
 const char *wifi_ssid = "YOUR_SSID";         // your network SSID (name)
 const char *wifi_password = "YOUR_PASSWORD"; // your network password
@@ -69,7 +64,6 @@ void setup()
 {
   Serial.begin(9600);                               // Serial Monitor Begin
   setup_wifi();                                     // setup wifi connection
-  pinMode(LED_PIN, OUTPUT);
   dash.setup_credentials(dev_id, webhook_password); // Setup Credentials
 }
 
@@ -81,27 +75,11 @@ void loop()
 
 void data()
 {
-    // BUTTON
-    // Receiving data from the first widget
-    if (dash.receive_data(0) == "restart")
-    {
-        Serial.println("Restarting...");
-        delay(2000);
-        ESP.restart();
-    }
+  // Data example
+  int temp = random(0, 100);
+  int hum = random(0, 100);
 
-    // SWITCH
-    // Receiving data from the second widget
-    if (dash.receive_data(1) == "true")
-    {
-        Serial.println("Turning on LED...");
-        delay(2000);
-        digitalWrite(LED_PIN, HIGH);
-    }
-    else if (dash.receive_data(1) == "false")
-    {
-        Serial.println("Turning off LED...");
-        delay(2000);
-        digitalWrite(LED_PIN, LOW);
-    }
+  // Send data to dashboard
+  dash.send_data(0, true, String(temp));
+  dash.send_data(1, true, String(hum));
 }
